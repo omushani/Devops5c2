@@ -1,150 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Registration Page</title>
+  <title>Event Registration Form</title>
   <style>
     body {
-      background-color: white;
       font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f8f9fa;
     }
-    .container {
-      width: 400px;
-      margin: auto;
-      background-color: yellow;
-      padding: 20px;
-      border: 2px solid black;
+
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 350px;
     }
+
     h1 {
       text-align: center;
-      font-size: 36px;
-      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
     }
-    label {
+
+    .input-box {
+      margin-bottom: 15px;
+    }
+
+    .input-box label {
       display: block;
-      margin-top: 10px;
-      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
     }
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    textarea,
-    select {
+
+    .input-box input {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s ease;
     }
-    input[type="radio"] {
-      margin-top: 10px;
-      margin-right: 5px;
+
+    .input-box input:focus {
+      border-color: #007bff;
     }
-    input[type="checkbox"] {
-      margin-top: 15px;
-    }
-    .buttons {
-      margin-top: 15px;
-      text-align: center;
-    }
-    input[type="submit"],
-    input[type="reset"] {
-      padding: 10px 20px;
-      font-weight: bold;
-      margin: 0 10px;
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .success-msg {
+      display: none;
+      text-align: center;
+      color: green;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
+  <div class="form-container">
+    <form id="regForm">
+      <h1>Event Registration</h1>
 
-  <div class="container">
-    <h1>Registration Page</h1>
-    <form id="registrationForm" onsubmit="return validateForm()">
-      <label for="fname">First Name</label>
-      <input type="text" id="fname" name="fname">
+      <div class="input-box">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" required>
+      </div>
 
-      <label for="lname">Last Name</label>
-      <input type="text" id="lname" name="lname">
+      <div class="input-box">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required>
+      </div>
 
-      <label for="dob">Date Of Birth</label>
-      <input type="date" id="dob" name="dob">
+      <div class="input-box">
+        <label for="fatherName">Father's Name</label>
+        <input type="text" id="fatherName" name="fatherName" required>
+      </div>
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email">
+      <div class="input-box">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
 
-      <label for="Phone">Phone</label>
-      <input type="text" id="phone" name="phone">
+      <div class="input-box">
+        <label for="phNo">Phone Number</label>
+        <input type="text" id="phNo" name="phNo" pattern="\d{10}" title="Phone number must be 10 digits only" required>
+      </div>
 
-      <label>Gender</label>
-      <input type="radio" id="male" name="gender" value="male"> Male
-      <input type="radio" id="female" name="gender" value="female"> Female
+      <button type="submit" class="submit-btn">Register</button>
 
-      <label for="phone">Phone No</label>
-      <input type="text" id="phone" name="phone">
-
-      <label for="address">Address</label>
-      <textarea id="address" name="address" rows="3"></textarea>
-
-      <input type="checkbox" id="terms" name="terms">
-      <label for="terms" style="display: inline;">Accept terms and conditions</label>
-
-      <label for="branch">Branch</label>
-      <select id="branch" name="branch">
-        <option value="">--Select--</option>
-        <option value="CSE">CSE</option>
-        <option value="ECE">ECE</option>
-        <option value="EEE">EEE</option>
-        <option value="MECH">MECH</option>
-        <option value="CIVIL">CIVIL</option>
-      </select>
-
-      <div class="buttons">
-        <input type="submit" value="Submit">
-        <input type="reset" value="Reset">
+      <div class="success-msg" id="successmsg">
+        Thank You For Registering :)
       </div>
     </form>
   </div>
 
   <script>
-    function validateForm() {
-      const fname = document.getElementById("fname").value.trim();
-      const lname = document.getElementById("lname").value.trim();
-      const dob = document.getElementById("dob").value;
-      const email = document.getElementById("email").value.trim();
-      const gender = document.querySelector('input[name="gender"]:checked');
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const terms = document.getElementById("terms").checked;
-      const branch = document.getElementById("branch").value;
+    const form = document.getElementById('regForm');
+    const successmsg = document.getElementById('successmsg');
 
-      // Basic validation
-      if (!fname || !lname || !dob || !email || !gender || !phone || !address || !branch) {
-        alert("Please fill all the fields.");
-        return false;
-      }
-
-      // Email validation
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        alert("Please enter a valid email address.");
-        return false;
-      }
-
-      // Phone validation
-      if (!/^\d{10}$/.test(phone)) {
-        alert("Phone number must be exactly 10 digits.");
-        return false;
-      }
-
-      // Terms validation
-      if (!terms) {
-        alert("You must accept the terms and conditions.");
-        return false;
-      }
-
-      alert("Form submitted successfully!");
-      return true;
-    }
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form from submitting normally
+      successmsg.style.display = 'block'; // Show success message
+      form.reset(); // Clear the form fields
+    });
   </script>
-
 </body>
 </html>
