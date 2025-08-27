@@ -65,6 +65,15 @@
       <label for="lname">Last Name</label>
       <input type="text" id="lname" name="lname">
 
+      <label for="father">Father Name</label>
+      <input type="text" id="father" name="father">
+
+      <label for="mother">Mother Name</label>
+      <input type="text" id="mother" name="mother">
+
+      <label for="occupation">Occupation</label>
+      <input type="text" id="occupation" name="occupation">
+
       <label for="dob">Date Of Birth</label>
       <input type="date" id="dob" name="dob">
 
@@ -77,6 +86,9 @@
 
       <label for="phone">Phone No</label>
       <input type="text" id="phone" name="phone">
+
+      <label for="altphone">Alternate Phone No</label>
+      <input type="text" id="altphone" name="altphone">
 
       <label for="address">Address</label>
       <textarea id="address" name="address" rows="3"></textarea>
@@ -105,16 +117,20 @@
     function validateForm() {
       const fname = document.getElementById("fname").value.trim();
       const lname = document.getElementById("lname").value.trim();
+      const father = document.getElementById("father").value.trim();
+      const mother = document.getElementById("mother").value.trim();
+      const occupation = document.getElementById("occupation").value.trim();
       const dob = document.getElementById("dob").value;
       const email = document.getElementById("email").value.trim();
       const gender = document.querySelector('input[name="gender"]:checked');
       const phone = document.getElementById("phone").value.trim();
+      const altphone = document.getElementById("altphone").value.trim();
       const address = document.getElementById("address").value.trim();
       const terms = document.getElementById("terms").checked;
       const branch = document.getElementById("branch").value;
 
       // Basic validation
-      if (!fname || !lname || !dob || !email || !gender || !phone || !address || !branch) {
+      if (!fname || !lname || !father || !mother || !occupation || !dob || !email || !gender || !phone || !altphone || !address || !branch) {
         alert("Please fill all the fields.");
         return false;
       }
@@ -126,9 +142,13 @@
         return false;
       }
 
-      // Phone validation
+      // Phone validation (main + alternate)
       if (!/^\d{10}$/.test(phone)) {
         alert("Phone number must be exactly 10 digits.");
+        return false;
+      }
+      if (!/^\d{10}$/.test(altphone)) {
+        alert("Alternate phone number must be exactly 10 digits.");
         return false;
       }
 
