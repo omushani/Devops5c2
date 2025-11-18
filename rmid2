@@ -1,0 +1,270 @@
+#### Iris Data: Correlation, Visualization & ANOVA ####
+
+# a) Load dataset and find correlation matrix -----------------------------
+
+data(iris)  # built-in dataset
+
+# Keep only numeric columns for correlation
+iris_num <- iris[, 1:4]
+
+# Correlation matrix
+cor_mat <- cor(iris_num)
+print("Correlation Matrix:")
+print(cor_mat)
+
+
+# b) Correlation plot & overview of iris data ----------------------------
+cat("\n--- Summary of iris data ---\n")
+print(summary(iris))
+
+# Install corrplot once (uncomment if not installed)
+# install.packages("corrplot")
+
+library(corrplot)
+
+# Correlation plot (heatmap style)
+corrplot(
+  cor_mat,
+  method = "color",      # colored squares
+  addCoef.col = "blue", # add correlation values
+  tl.col = "red",      # label color          
+  number.cex = 0.7
+)
+
+# c) ANOVA: Effect of Species (categorical) on each numeric feature ------
+
+# Sepal Length ~ Species
+anova_sepal_length <- aov(Sepal.Length ~ Species, data = iris)
+cat("\n--- ANOVA: Sepal.Length ~ Species ---\n")
+print(summary(anova_sepal_length))
+
+# Sepal Width ~ Species
+anova_sepal_width <- aov(Sepal.Width ~ Species, data = iris)
+cat("\n--- ANOVA: Sepal.Width ~ Species ---\n")
+print(summary(anova_sepal_width))
+
+# Petal Length ~ Species
+anova_petal_length <- aov(Petal.Length ~ Species, data = iris)
+cat("\n--- ANOVA: Petal.Length ~ Species ---\n")
+print(summary(anova_petal_length))
+
+# Petal Width ~ Species
+anova_petal_width <- aov(Petal.Width ~ Species, data = iris)
+cat("\n--- ANOVA: Petal.Width ~ Species ---\n")
+print(summary(anova_petal_width))
+
+
+# --------------------------------------------------
+# Install and load package
+# --------------------------------------------------
+install.packages("e1071")
+library(e1071)
+
+# --------------------------------------------------
+# Dataset (Credit Risk Assessment)
+# --------------------------------------------------
+data <- data.frame(
+  Home = c("Own","Rent","Own","Own","Rent","Rent","Own","Own","Rent","Own"),
+  Marital = c("Single","Married","Single","Married","Single","Married","Married","Single","Married","Single"),
+  Job = c("Blue","Admin","Admin","Blue","Blue","Admin","Admin","Blue","Admin","Admin"),
+  Risk = c("Low","High","Low","Low","High","High","High","Low","High","Low")
+)
+
+# Convert all columns to factors
+data <- data.frame(lapply(data, factor))
+
+# --------------------------------------------------
+# Build Naive Bayes Model
+# --------------------------------------------------
+model <- naiveBayes(Risk ~ ., data = data)
+
+# --------------------------------------------------
+# Predictions on the same dataset
+# --------------------------------------------------
+pred <- predict(model, data)
+
+# --------------------------------------------------
+# Evaluation: Confusion Matrix
+# --------------------------------------------------
+cm <- table(Actual = data$Risk, Predicted = pred)
+cm
+
+# --------------------------------------------------
+# Accuracy Calculation
+# --------------------------------------------------
+accuracy <- sum(diag(cm)) / sum(cm)
+accuracy
+
+### Clustering on Iris Dataset ###
+
+# Load data
+df <- iris
+head(df)
+
+# ------------------------------
+# Visualize original data (by Species)
+# ------------------------------
+library(ggplot2)
+
+# Petal-based scatter plot
+ggplot(df, aes(Petal.Length, Petal.Width)) +
+  geom_point(aes(col = Species), size = 4) +
+  ggtitle("Petal Length vs Petal Width (Colored by Species)")
+
+# Sepal-based scatter plot
+ggplot(df, aes(Sepal.Length, Sepal.Width)) +
+  geom_point(aes(col = Species), size = 4) +
+  ggtitle("Sepal Length vs Sepal Width (Colored by Species)")
+
+# ------------------------------
+# a) Choosing clustering algorithm: K-Means (k = 3)
+# ------------------------------
+set.seed(101)
+k <- 3
+
+# Use only numeric columns (first 4)
+iriscluster <- kmeans(df[, 1:4], centers = k, nstart = 25)
+
+# View clustering result
+iriscluster
+
+# Compare clusters with actual Species
+table(iriscluster$cluster, df$Species)
+
+# ------------------------------
+# b) Plot cluster data
+# ------------------------------
+library(cluster)
+
+# 1) Cluster plot in 2D (PCA-based)
+# Use only numeric columns in clusplot
+clusplot(df[, 1:4],
+         iriscluster$cluster,
+         color = TRUE,
+         shade = TRUE,
+         labels = 0,
+         lines = 0,
+         main = "K-Means Clustering on Iris Data")
+
+# 2) Hierarchical clustering (on first two features)
+clusters <- hclust(dist(df[, 1:2]))
+plot(clusters, main = "Hierarchical Clustering Dendrogram (Sepal Length & Width)")
+
+
+### House Price Prediction using Linear Regression ###
+
+# ----------------------------------------
+# Step 1: Import dataset from the web
+# ----------------------------------------
+
+url <- "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
+df <- read.csv(url)
+
+head(df)
+summary(df)
+
+# ----------------------------------------
+# Step 2: Build Linear Regression Model
+# Predicting MEDV (Median House Price)
+# ----------------------------------------
+
+model <- lm(medv ~ ., data = df)
+
+# Show model summary
+summary(model)
+
+# ----------------------------------------
+# Step 3: Predict on the same dataset
+# (or create train/test split if needed)
+# ----------------------------------------
+
+pred <- predict(model, df)
+
+# Compare first few predictions
+head(cbind(Actual = df$medv, Predicted = pred))
+
+# ----------------------------------------
+# Step 4: Plot Actual vs Predicted Values
+# ----------------------------------------
+plot(df$medv, pred,
+     xlab = "Actual House Prices",
+     ylab = "Predicted House Prices",
+     main = "Actual vs Predicted House Prices",
+     pch = 19, col = "blue")
+abline(0, 1, col = "red", lwd = 2)
+
+# Car Dataset
+car_id <- 1:10
+X1 <- c(3100, 3500, 2800, 4000, 2500, 3200, 3800, 2900, 3400, 2600)   # Weight
+X2 <- c(140, 160, 120, 180, 100, 150, 170, 130, 155, 110)            # Horsepower
+X3 <- c(3.5, 4.0, 2.5, 4.5, 2.0, 3.6, 4.2, 3.0, 3.8, 2.2)             # Engine Size
+Y  <- c(22, 19, 25, 16, 28, 21, 17, 23, 20, 26)                       # MPG
+
+# Create a data frame
+car_data <- data.frame(car_id, X1, X2, X3, Y)
+
+car_data
+model <- lm(Y ~ X1 + X2 + X3, data = car_data)
+
+# Display full model summary
+summary(model)
+predicted_values <- predict(model, car_data)
+
+# Compare actual vs predicted
+data.frame(Actual = car_data$Y, Predicted = round(predicted_values, 2))
+plot(car_data$X1, car_data$Y,
+     xlab = "Weight (lbs)",
+     ylab = "MPG",
+     main = "MPG vs Weight",
+     pch = 19)
+abline(lm(Y ~ X1, data = car_data))
+
+
+# (a) Load required packages
+# install.packages("dplyr")   # if not already installed
+library(dplyr)
+
+# (b) Import data from web
+url <- "https://stats.idre.ucla.edu/stat/data/binary.csv"
+student_admit <- read.csv(url)
+
+# (c) View first rows & structure
+head(student_admit)
+str(student_admit)
+
+
+
+# (e) Fit logistic regression model
+# admit ~ gre + gpa + rank
+model_logit <- glm(admit ~ gre + gpa + rank,
+                   data = student_admit,
+                   family = binomial(link = "logit"))
+
+# (f) Get summary of model
+summary(model_logit)
+
+# (g) Interpret coefficients (Odds-Ratios)
+exp(coef(model_logit))    # to get odds ratios
+confint(model_logit)      # 95% CI for coefficients
+exp(confint(model_logit)) # 95% CI for odds ratios
+
+# (h) Predict probability of admission for each student & display
+student_admit <- student_admit %>%
+  mutate(pred_prob = predict(model_logit, type = "response"),
+         pred_class = ifelse(pred_prob >= 0.5, 1, 0))
+
+head(student_admit)
+
+# (i) Model performance: confusion table
+table(Actual = student_admit$admit,
+      Predicted = student_admit$pred_class)
+
+null_model<-glm(admit ~ 1,data=student_admit,family=binomial)
+anova(null_model,test="Chisq")
+summary(null_model)
+
+
+
+
+
+
